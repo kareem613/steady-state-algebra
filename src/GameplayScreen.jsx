@@ -173,7 +173,7 @@ export default function GameplayScreen({ equation, onApply, onUndo, canUndo, sol
 
           {/* Execution Block */}
           <div className="w-full md:w-48 flex flex-col gap-3">
-            {/* BALANCE / NEXT + Undo side by side */}
+            {/* GO / NEXT + Undo side by side */}
             <div className="flex gap-3">
               {solved ? (
                 <button
@@ -189,7 +189,7 @@ export default function GameplayScreen({ equation, onApply, onUndo, canUndo, sol
                   className="flex-1 h-14 bg-gradient-to-br from-primary to-primary-container text-on-primary-container rounded-2xl font-headline font-extrabold text-base tracking-tight uppercase shadow-[0_4px_16px_rgba(34,177,236,0.3)] active:scale-95 transition-all flex items-center justify-center gap-2"
                 >
                   <span className="material-symbols-outlined text-xl">balance</span>
-                  BALANCE
+                  GO
                 </button>
               )}
               <button
