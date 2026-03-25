@@ -2,10 +2,10 @@ import { useState } from 'react'
 import { applyOperation, buildOperationDisplay } from './algebraEngine'
 
 const KEYPAD_ROWS = [
-  ['7', '8', '9', '/'],
-  ['4', '5', '6', '*'],
-  ['1', '2', '3', '-'],
-  ['0', 'x', '⌫', '+'],
+  ['+', '7', '8', '9'],
+  ['-', '4', '5', '6'],
+  ['*', '1', '2', '3'],
+  ['/', '0', 'x', '⌫'],
 ]
 
 const OP_KEYS = ['/', '*', '-', '+']
@@ -24,7 +24,7 @@ const KEY_TO_OP = {
  */
 export default function GameplayScreen({ equation, onApply }) {
   const [input, setInput] = useState('')
-  const [selectedOp, setSelectedOp] = useState('subtract')
+  const [selectedOp, setSelectedOp] = useState(null)
 
   const lhsParts = parseDisplayTerms(equation.lhsStr)
 
@@ -45,15 +45,16 @@ export default function GameplayScreen({ equation, onApply }) {
   }
 
   function handleSubmit() {
-    if (!input.trim()) return
+    if (!input.trim() || !selectedOp) return
     const result = applyOperation(`${equation.lhsStr} = ${equation.rhsStr}`, selectedOp, input.trim())
     if (result.isValid) {
       setInput('')
+      setSelectedOp(null)
       onApply(result)
     }
   }
 
-  const operationLabel = input ? buildOperationDisplay(selectedOp, input) : null
+  const operationLabel = (input && selectedOp) ? buildOperationDisplay(selectedOp, input) : null
 
   return (
     <div className="bg-background text-on-background font-body h-[100dvh] flex flex-col overflow-hidden dark">
@@ -124,7 +125,7 @@ export default function GameplayScreen({ equation, onApply }) {
 
               <div className="flex gap-4 w-full max-w-xs">
                 <button
-                  onClick={() => setInput('')}
+                  onClick={() => { setInput(''); setSelectedOp(null) }}
                   className="flex-1 py-3 px-4 rounded-xl bg-error-container text-on-error-container font-headline font-bold flex items-center justify-center gap-2 active:scale-95 transition-all text-sm"
                 >
                   <span className="material-symbols-outlined text-base">close</span>
