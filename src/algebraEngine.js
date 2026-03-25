@@ -104,12 +104,20 @@ function simplifyExpr(expr) {
   try {
     // simplify first (arithmetic, cancellation), then rationalize to expand factored forms
     const simplified = math.simplify(expr).toString()
-    return math.rationalize(simplified).toString()
+    return formatDisplayExpr(math.rationalize(simplified).toString())
   } catch {
-    try { return math.rationalize(expr).toString() } catch {
-      try { return math.simplify(expr).toString() } catch { return expr }
+    try { return formatDisplayExpr(math.rationalize(expr).toString()) } catch {
+      try { return formatDisplayExpr(math.simplify(expr).toString()) } catch { return expr }
     }
   }
+}
+
+/** Convert math.js output like "2 * x" → "2x" for cleaner display */
+function formatDisplayExpr(expr) {
+  return expr
+    .replace(/(\d+)\s*\*\s*([a-zA-Z])/g, '$1$2')
+    .replace(/(-)\s*\*\s*([a-zA-Z])/g, '-$2')
+    .trim()
 }
 
 function opVerb(op) {
