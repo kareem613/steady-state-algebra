@@ -52,13 +52,6 @@ export default function GameplayScreen({ equation, onPreview }) {
     }
   }
 
-  function handleSimplify() {
-    const result = applyOperation(`${equation.lhsStr} = ${equation.rhsStr}`, 'add', '0')
-    if (result.isValid) {
-      onPreview({ ...result, operationLabel: 'simplify' })
-    }
-  }
-
   const operationLabel = input ? buildOperationDisplay(selectedOp, input) : null
 
   return (
@@ -188,12 +181,6 @@ export default function GameplayScreen({ equation, onPreview }) {
             >
               <span className="material-symbols-outlined text-4xl">send</span>
               DO IT
-            </button>
-            <button
-              onClick={handleSimplify}
-              className="h-14 rounded-2xl bg-surface-container-low text-on-surface-variant font-headline font-bold text-xs uppercase tracking-widest hover:bg-surface-container transition-colors"
-            >
-              Simplify
             </button>
           </div>
         </div>
