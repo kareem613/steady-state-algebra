@@ -56,6 +56,7 @@ export default function App() {
     setEquation(pickEquation(LEVELS[levelIndex]))
     setHistory([])
     setSolved(false)
+    setAttempts(0)
   }
 
   return (

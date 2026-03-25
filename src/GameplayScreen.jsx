@@ -66,11 +66,9 @@ export default function GameplayScreen({ equation, onApply, onUndo, canUndo, sol
           <h1 className="text-lg font-bold text-sky-400 tracking-widest uppercase font-headline tracking-tight">
             STEADY STATE
           </h1>
-          {attempts > 0 && (
-            <span className="text-xs font-headline font-semibold text-on-surface-variant tracking-widest uppercase tabular-nums">
-              {attempts} {attempts === 1 ? 'attempt' : 'attempts'}
-            </span>
-          )}
+          <span className="text-xs font-headline font-semibold text-on-surface-variant tracking-widest uppercase tabular-nums">
+            {attempts} {attempts === 1 ? 'attempt' : 'attempts'}
+          </span>
         </div>
       </header>
 
