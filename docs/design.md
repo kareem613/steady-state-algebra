@@ -28,14 +28,17 @@ The typographic identity relies on the tension between the modern, eccentric **S
 
 - **Display & Headlines (Space Grotesk):** These should be used for level titles and "Big Math" moments. Space Grotesk's quirky terminals provide the "playful" aspect of the academic aesthetic. Use `display-lg` for victory states and `headline-md` for module headers.
 - **Title & Body (Manrope):** Use Manrope for UI instructions and labels. It provides an authoritative, editorial feel.
-- **The Math Layer (Monospace):** While the system scales use sans-serifs, all mathematical variables and command-line inputs must be set in a high-quality Monospace font (to be paired with the system). This distinguishes "System UI" from "Mathematical Data."
+- **The Math Layer (JetBrains Mono):** All mathematical variables, equation terms, and command-line inputs are set in **JetBrains Mono** (`font-mono`). This distinguishes "System UI" from "Mathematical Data." The `.math-variable` utility class applies JetBrains Mono with italic styling for inline variable symbols.
 
 ## 4. Elevation & Depth
 In this system, elevation is conveyed through **Tonal Layering** rather than traditional drop shadows.
 
 - **The Layering Principle:** Depth is achieved by "stacking." A `surface-container-lowest` card placed on a `surface-container-low` section creates a natural "recessed" look. Placing a `surface-bright` element on `surface-dim` creates a "raised" look.
-- **Ambient Shadows:** When an element must "float" (like a grabbed algebraic term), use a shadow with a blur of `24px` and an opacity of `6%`. The shadow color must be a tinted version of `on-surface` (#dbe6fe), never pure black, to maintain the "glowing" atmosphere.
-- **The "Ghost Border" Fallback:** If a container lacks enough contrast against its background, use a **Ghost Border**: the `outline-variant` token at 15% opacity. 100% opaque borders are strictly forbidden.
+- **Ambient Shadows (Floating Elements):** Header bars and floating UI use `shadow-[0_4px_24px_rgba(219,230,254,0.06)]` — a `24px` blur at `6%` opacity tinted with `on-surface` (#dbe6fe). Never use pure black for these shadows.
+- **Contextual Glow Shadows (Action Buttons):** Primary and secondary action buttons use a color-matched glow: `shadow-[0_4px_16px_rgba(59,191,250,0.3)]` for primary actions, `shadow-[0_4px_16px_rgba(105,246,184,0.2)]` for secondary. This reinforces the "lit from within" feel.
+- **Depth-Separation Shadow (Bottom Panel):** The bottom keypad panel uses a heavier upward shadow (`shadow-[0_-20px_50px_rgba(0,0,0,0.4)]`) to visually separate it from the workspace above. This is the only approved use of a near-black shadow, reserved for large floating panels.
+- **The "Ghost Border" Fallback:** If a container lacks enough contrast against its background, use a **Ghost Border**: the `outline-variant` token at 15–30% opacity (`border-outline-variant/30`). 100% opaque borders are strictly forbidden.
+- **Ghost Preview Dashed Border:** The pending-operation input area uses `border-2 border-dashed border-primary/20` to signal an unsettled/preview state. This dashed, low-opacity treatment is the approved pattern for any UI element representing a provisional or "about to be applied" state.
 
 ## 5. Components
 
@@ -69,5 +72,5 @@ The units of the sandbox.
 
 ### Don't:
 - **Don't use 1px solid borders:** It breaks the high-end editorial feel and makes the app look like a generic dashboard.
-- **Don't use pure black shadows:** They "dirty" the slate blue palette. Always tint your shadows with the `on-surface` color.
+- **Don't use pure black shadows on floating elements:** They "dirty" the slate blue palette. Floating and header elements must use on-surface-tinted shadows. The only exception is the bottom panel depth-separation shadow.
 - **Don't crowd the UI:** If a screen feels busy, increase the spacing rather than adding more lines or boxes. Use the `0.5rem` to `1.5rem` roundedness scale to keep everything feeling soft and tactile.
