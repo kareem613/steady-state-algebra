@@ -10,6 +10,14 @@ const KEYPAD_ROWS = [
 
 const OP_KEYS = ['/', '*', '-', '+']
 
+// Per-operator color config: [inactiveBg, inactiveText, activeBg, activeText, activeShadow]
+const OP_COLORS = {
+  '+': ['bg-emerald-900/60', 'text-emerald-300', 'bg-emerald-500', 'text-white', 'shadow-[0_4px_16px_rgba(52,211,153,0.4)]'],
+  '-': ['bg-rose-900/60',    'text-rose-300',    'bg-rose-500',    'text-white', 'shadow-[0_4px_16px_rgba(244,63,94,0.4)]'],
+  '*': ['bg-amber-900/60',   'text-amber-300',   'bg-amber-500',   'text-white', 'shadow-[0_4px_16px_rgba(245,158,11,0.4)]'],
+  '/': ['bg-violet-900/60',  'text-violet-300',  'bg-violet-500',  'text-white', 'shadow-[0_4px_16px_rgba(139,92,246,0.4)]'],
+}
+
 const KEY_TO_OP = {
   '/': 'divide',
   '*': 'multiply',
@@ -140,14 +148,17 @@ export default function GameplayScreen({ equation, onApply, onUndo, canUndo, sol
                   <button
                     key={`${ri}-${ci}`}
                     onClick={() => handleKey(key)}
-                    className={`h-12 rounded-2xl font-headline font-bold text-xl transition-colors active:scale-90 ${
+                    className={`h-12 rounded-2xl font-headline font-bold text-2xl transition-colors active:scale-90 ${
                       isOpKey
-                        ? KEY_TO_OP[key] === selectedOp
-                          ? 'bg-primary text-on-primary text-2xl shadow-[0_4px_16px_rgba(59,191,250,0.3)]'
-                          : 'bg-surface-container-highest text-primary text-2xl hover:bg-surface-bright'
+                        ? (() => {
+                            const [iBg, iText, aBg, aText, aShadow] = OP_COLORS[key]
+                            return KEY_TO_OP[key] === selectedOp
+                              ? `${aBg} ${aText} ${aShadow}`
+                              : `${iBg} ${iText}`
+                          })()
                         : key === 'x'
-                        ? 'bg-surface-container-high text-primary italic font-mono hover:bg-surface-bright'
-                        : 'bg-surface-container-high text-on-surface hover:bg-surface-bright'
+                        ? 'bg-surface-container-high text-primary italic font-mono text-xl hover:bg-surface-bright'
+                        : 'bg-surface-container-high text-on-surface text-xl hover:bg-surface-bright'
                     }`}
                   >
                     {key === '⌫' ? (
