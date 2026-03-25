@@ -173,33 +173,33 @@ export default function GameplayScreen({ equation, onApply, onUndo, canUndo, sol
 
           {/* Execution Block */}
           <div className="w-full md:w-48 flex flex-col gap-3">
-            {solved ? (
+            {/* BALANCE / NEXT + Undo side by side */}
+            <div className="flex gap-3">
+              {solved ? (
+                <button
+                  onClick={onNextPuzzle}
+                  className="flex-1 h-14 bg-gradient-to-br from-secondary to-secondary-container text-on-secondary-container rounded-2xl font-headline font-extrabold text-base tracking-tight uppercase shadow-[0_4px_16px_rgba(105,246,184,0.2)] active:scale-95 transition-all flex items-center justify-center gap-2"
+                >
+                  <span className="material-symbols-outlined text-xl">replay</span>
+                  NEXT
+                </button>
+              ) : (
+                <button
+                  onClick={handleSubmit}
+                  className="flex-1 h-14 bg-gradient-to-br from-primary to-primary-container text-on-primary-container rounded-2xl font-headline font-extrabold text-base tracking-tight uppercase shadow-[0_4px_16px_rgba(34,177,236,0.3)] active:scale-95 transition-all flex items-center justify-center gap-2"
+                >
+                  <span className="material-symbols-outlined text-xl">balance</span>
+                  BALANCE
+                </button>
+              )}
               <button
-                onClick={onNextPuzzle}
-                className="flex-1 bg-gradient-to-br from-secondary to-secondary-container text-on-secondary-container rounded-[1.5rem] font-headline font-extrabold text-2xl tracking-tight uppercase shadow-[0_12px_40px_rgba(105,246,184,0.2)] active:scale-95 transition-all flex flex-col items-center justify-center gap-1 min-h-[120px]"
+                onClick={onUndo}
+                disabled={!canUndo}
+                className="w-14 h-14 rounded-2xl bg-surface-container-low text-on-surface-variant flex items-center justify-center hover:bg-surface-container active:scale-95 transition-all disabled:opacity-30"
               >
-                <span className="material-symbols-outlined text-4xl">replay</span>
-                NEXT
+                <span className="material-symbols-outlined">undo</span>
               </button>
-            ) : (
-              <button
-                onClick={handleSubmit}
-                className="flex-1 bg-gradient-to-br from-primary to-primary-container text-on-primary-container rounded-[1.5rem] font-headline font-extrabold text-2xl tracking-tight uppercase shadow-[0_12px_40px_rgba(34,177,236,0.3)] active:scale-95 transition-all flex flex-col items-center justify-center gap-1 min-h-[120px]"
-              >
-                <span className="material-symbols-outlined text-4xl">balance</span>
-                BALANCE
-              </button>
-            )}
-
-            {/* Undo button */}
-            <button
-              onClick={onUndo}
-              disabled={!canUndo}
-              className="h-12 rounded-2xl bg-surface-container-low text-on-surface-variant font-headline font-bold text-sm uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-surface-container active:scale-95 transition-all disabled:opacity-30"
-            >
-              <span className="material-symbols-outlined text-base">undo</span>
-              Undo
-            </button>
+            </div>
 
             {/* Level selector */}
             <div className="flex items-center justify-between bg-surface-container-low rounded-2xl px-3 py-2">
