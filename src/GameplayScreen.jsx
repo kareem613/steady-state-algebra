@@ -22,7 +22,7 @@ const KEY_TO_OP = {
  * Lets the user type an operation to apply to both sides of the equation.
  * On submit, shows a preview via the Ghost Preview state.
  */
-export default function GameplayScreen({ equation, onApply, solved, onNextPuzzle, levelIndex, levelCount, levelLabel, onLevelChange }) {
+export default function GameplayScreen({ equation, onApply, onUndo, canUndo, solved, onNextPuzzle, levelIndex, levelCount, levelLabel, onLevelChange }) {
   const [input, setInput] = useState('')
   const [selectedOp, setSelectedOp] = useState(null)
 
@@ -186,10 +186,20 @@ export default function GameplayScreen({ equation, onApply, solved, onNextPuzzle
                 onClick={handleSubmit}
                 className="flex-1 bg-gradient-to-br from-primary to-primary-container text-on-primary-container rounded-[1.5rem] font-headline font-extrabold text-2xl tracking-tight uppercase shadow-[0_12px_40px_rgba(34,177,236,0.3)] active:scale-95 transition-all flex flex-col items-center justify-center gap-1 min-h-[120px]"
               >
-                <span className="material-symbols-outlined text-4xl">send</span>
-                DO IT
+                <span className="material-symbols-outlined text-4xl">balance</span>
+                BALANCE
               </button>
             )}
+
+            {/* Undo button */}
+            <button
+              onClick={onUndo}
+              disabled={!canUndo}
+              className="h-12 rounded-2xl bg-surface-container-low text-on-surface-variant font-headline font-bold text-sm uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-surface-container active:scale-95 transition-all disabled:opacity-30"
+            >
+              <span className="material-symbols-outlined text-base">undo</span>
+              Undo
+            </button>
 
             {/* Level selector */}
             <div className="flex items-center justify-between bg-surface-container-low rounded-2xl px-3 py-2">
