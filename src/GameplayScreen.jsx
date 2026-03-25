@@ -77,34 +77,37 @@ export default function GameplayScreen({ equation, onApply, onUndo, canUndo, sol
           <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-secondary/10 rounded-full blur-[120px]" />
         </div>
 
-        {/* Equation Display — takes top half of available space */}
-        <div className="flex-1 flex items-center justify-center w-full max-w-2xl min-h-0">
-          <section className="w-full text-center">
-            <div className={`p-6 md:p-10 rounded-2xl relative transition-colors ${solved ? 'bg-secondary/10' : 'bg-surface-container-low'}`}>
-              {solved && (
-                <div className="text-secondary font-headline font-bold text-3xl mb-2">✓ Solved!</div>
-              )}
-              <div className={`font-headline font-bold tracking-tighter text-on-background flex flex-wrap items-center justify-center text-3xl md:text-5xl gap-2 ${solved ? 'opacity-50' : ''}`}>
-                {lhsParts.map((part, i) => (
-                  <span key={i} className={part.isOp ? 'text-primary' : part.isVar ? 'font-mono italic' : ''}>
-                    {part.text}
-                  </span>
-                ))}
-                <span className="text-outline-variant mx-4">=</span>
-                <span>{equation.rhsStr}</span>
-              </div>
-              <div className="mt-3 text-on-surface-variant font-medium tracking-widest uppercase text-xs">
-                {solved ? 'Well done!' : 'Current Equilibrium'}
-              </div>
-            </div>
-          </section>
-        </div>
+        {/* Content wrapper — fills available space; equation floats above pinned ghost */}
+        <div className="flex-1 flex flex-col w-full min-h-0">
 
-        {/* Ghost Preview — always rendered at same size; fades in/out */}
-        <section
-          className="w-full max-w-3xl mb-2 flex-shrink-0 flex flex-col items-center transition-opacity duration-300"
-          style={{ opacity: hasPreview ? 1 : 0, pointerEvents: hasPreview ? 'auto' : 'none' }}
-        >
+          {/* Equation Display — centered in its flex-1 zone */}
+          <div className="flex-1 flex items-center justify-center w-full max-w-2xl min-h-0 mx-auto">
+            <section className="w-full text-center">
+              <div className={`p-6 md:p-10 rounded-2xl relative transition-colors ${solved ? 'bg-secondary/10' : 'bg-surface-container-low'}`}>
+                {solved && (
+                  <div className="text-secondary font-headline font-bold text-3xl mb-2">✓ Solved!</div>
+                )}
+                <div className={`font-headline font-bold tracking-tighter text-on-background flex flex-wrap items-center justify-center text-3xl md:text-5xl gap-2 ${solved ? 'opacity-50' : ''}`}>
+                  {lhsParts.map((part, i) => (
+                    <span key={i} className={part.isOp ? 'text-primary' : part.isVar ? 'font-mono italic' : ''}>
+                      {part.text}
+                    </span>
+                  ))}
+                  <span className="text-outline-variant mx-4">=</span>
+                  <span>{equation.rhsStr}</span>
+                </div>
+                <div className="mt-3 text-on-surface-variant font-medium tracking-widest uppercase text-xs">
+                  {solved ? 'Well done!' : 'Current Equilibrium'}
+                </div>
+              </div>
+            </section>
+          </div>
+
+          {/* Ghost Preview — pinned at bottom of content zone; fades in/out */}
+          <section
+            className="w-full max-w-3xl mb-2 flex-shrink-0 flex flex-col items-center mx-auto transition-opacity duration-300"
+            style={{ opacity: hasPreview ? 1 : 0, pointerEvents: hasPreview ? 'auto' : 'none' }}
+          >
           <div
             className="border-2 border-dashed border-primary/20 p-4 rounded-[2rem] w-full flex flex-col items-center"
             style={{ backdropFilter: 'blur(16px)', background: 'rgba(21,38,63,0.4)' }}
@@ -142,6 +145,8 @@ export default function GameplayScreen({ equation, onApply, onUndo, canUndo, sol
             </div>
           </div>
         </section>
+
+        </div>{/* end content wrapper */}
 
       </main>
 
