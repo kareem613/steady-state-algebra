@@ -69,7 +69,7 @@ export default function GameplayScreen({ equation, onPreview }) {
   }[selectedOp]
 
   return (
-    <div className="bg-background text-on-background font-body min-h-screen flex flex-col overflow-hidden dark">
+    <div className="bg-background text-on-background font-body h-[100dvh] flex flex-col overflow-hidden dark">
       {/* TopAppBar */}
       <header className="bg-slate-950/80 backdrop-blur-xl fixed top-0 w-full z-50 shadow-[0_4px_24px_rgba(219,230,254,0.06)]">
         <div className="flex items-center justify-between px-6 h-16 w-full">
@@ -79,8 +79,9 @@ export default function GameplayScreen({ equation, onPreview }) {
         </div>
       </header>
 
-      {/* Main Sandbox Canvas */}
-      <main className="flex-1 flex flex-col items-center justify-center p-6 mt-16 mb-20 relative">
+      {/* Main Sandbox Canvas — centered in the space between header and keypad */}
+      <main className="flex-1 flex flex-col items-center justify-center px-4 relative overflow-hidden"
+            style={{ paddingTop: '64px', paddingBottom: 'clamp(320px, 62vw, 540px)' }}>
         {/* Decorative Background */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
           <div className="absolute -top-24 -left-24 w-96 h-96 bg-primary/20 rounded-full blur-[120px]" />
@@ -88,9 +89,9 @@ export default function GameplayScreen({ equation, onPreview }) {
         </div>
 
         {/* Equation Display */}
-        <section className="w-full max-w-2xl mb-12 text-center">
-          <div className="bg-surface-container-low p-10 rounded-2xl relative">
-            <div className="font-headline font-bold tracking-tighter text-on-background flex flex-wrap items-center justify-center text-4xl md:text-5xl gap-2">
+        <section className="w-full max-w-2xl mb-6 text-center">
+          <div className="bg-surface-container-low p-6 md:p-10 rounded-2xl relative">
+            <div className="font-headline font-bold tracking-tighter text-on-background flex flex-wrap items-center justify-center text-3xl md:text-5xl gap-2">
               {lhsParts.map((part, i) => (
                 <span key={i} className={part.isOp ? 'text-primary' : part.isVar ? 'font-mono italic' : ''}>
                   {part.text}
@@ -99,7 +100,7 @@ export default function GameplayScreen({ equation, onPreview }) {
               <span className="text-outline-variant mx-4">=</span>
               <span>{equation.rhsStr}</span>
             </div>
-            <div className="mt-4 text-on-surface-variant font-medium tracking-widest uppercase text-xs">
+            <div className="mt-3 text-on-surface-variant font-medium tracking-widest uppercase text-xs">
               Current Equilibrium
             </div>
           </div>
@@ -107,28 +108,28 @@ export default function GameplayScreen({ equation, onPreview }) {
 
         {/* Ghost Preview of Proposed Change */}
         {operationLabel && (
-          <section className="w-full max-w-3xl mb-8 flex flex-col items-center">
+          <section className="w-full max-w-3xl mb-4 flex flex-col items-center">
             <div
-              className="border-2 border-dashed border-primary/20 p-8 rounded-[2rem] w-full flex flex-col items-center transition-all duration-500"
+              className="border-2 border-dashed border-primary/20 p-4 md:p-8 rounded-[2rem] w-full flex flex-col items-center transition-all duration-500"
               style={{ backdropFilter: 'blur(16px)', background: 'rgba(21,38,63,0.4)' }}
             >
-              <div className="flex flex-wrap items-center justify-center gap-2 md:gap-4 mb-8">
+              <div className="flex flex-wrap items-center justify-center gap-2 md:gap-4 mb-4">
                 {/* LHS crossed out */}
-                <div className="flex items-center text-3xl md:text-4xl font-headline font-medium text-on-surface/50 line-through decoration-primary-container/40">
+                <div className="flex items-center text-2xl md:text-4xl font-headline font-medium text-on-surface/50 line-through decoration-primary-container/40">
                   {lhsParts.map((p, i) => <span key={i}>{p.text}</span>)}
                 </div>
                 {/* Ghost op LHS */}
-                <div className="flex items-center text-4xl md:text-5xl font-headline font-bold text-primary animate-pulse">
+                <div className="flex items-center text-3xl md:text-5xl font-headline font-bold text-primary animate-pulse">
                   <span className="mx-2 text-primary-fixed">{operationLabel.charAt(0)}</span>
                   <span>{operationLabel.slice(1).trim()}</span>
                 </div>
-                <div className="text-3xl text-outline-variant mx-4">=</div>
+                <div className="text-2xl text-outline-variant mx-2">=</div>
                 {/* RHS crossed out */}
-                <div className="flex items-center text-3xl md:text-4xl font-headline font-medium text-on-surface/50 line-through decoration-primary-container/40">
+                <div className="flex items-center text-2xl md:text-4xl font-headline font-medium text-on-surface/50 line-through decoration-primary-container/40">
                   {equation.rhsStr}
                 </div>
                 {/* Ghost op RHS */}
-                <div className="flex items-center text-4xl md:text-5xl font-headline font-bold text-primary animate-pulse">
+                <div className="flex items-center text-3xl md:text-5xl font-headline font-bold text-primary animate-pulse">
                   <span className="mx-2 text-primary-fixed">{operationLabel.charAt(0)}</span>
                   <span>{operationLabel.slice(1).trim()}</span>
                 </div>
@@ -137,16 +138,16 @@ export default function GameplayScreen({ equation, onPreview }) {
               <div className="flex gap-4 w-full max-w-xs">
                 <button
                   onClick={() => setInput('')}
-                  className="flex-1 py-4 px-6 rounded-xl bg-error-container text-on-error-container font-headline font-bold flex items-center justify-center gap-2 active:scale-95 transition-all"
+                  className="flex-1 py-3 px-4 rounded-xl bg-error-container text-on-error-container font-headline font-bold flex items-center justify-center gap-2 active:scale-95 transition-all text-sm"
                 >
-                  <span className="material-symbols-outlined">close</span>
+                  <span className="material-symbols-outlined text-base">close</span>
                   REJECT
                 </button>
                 <button
                   onClick={handleSubmit}
-                  className="flex-1 py-4 px-6 rounded-xl bg-gradient-to-br from-primary to-primary-container text-on-primary-container font-headline font-bold flex items-center justify-center gap-2 active:scale-95 transition-all shadow-[0_8px_32px_rgba(59,191,250,0.2)]"
+                  className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-br from-primary to-primary-container text-on-primary-container font-headline font-bold flex items-center justify-center gap-2 active:scale-95 transition-all shadow-[0_8px_32px_rgba(59,191,250,0.2)] text-sm"
                 >
-                  <span className="material-symbols-outlined">check</span>
+                  <span className="material-symbols-outlined text-base">check</span>
                   ACCEPT
                 </button>
               </div>
@@ -155,8 +156,8 @@ export default function GameplayScreen({ equation, onPreview }) {
         )}
 
         {/* Command Prompt */}
-        <div className="w-full max-w-md mb-4 flex flex-col items-center">
-          <div className="bg-surface-container-lowest px-6 py-2 rounded-full mb-6 border-b-2 border-primary flex items-center gap-3">
+        <div className="w-full max-w-md flex flex-col items-center">
+          <div className="bg-surface-container-lowest px-6 py-2 rounded-full border-b-2 border-primary flex items-center gap-3">
             <span className="font-mono text-primary font-bold tracking-widest text-lg animate-pulse">&gt;</span>
             <span className="font-headline text-lg text-on-background font-medium">
               {input ? `${opLabel} ${input}` : <span className="text-on-surface-variant">enter a value...</span>}
