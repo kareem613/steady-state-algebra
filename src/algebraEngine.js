@@ -113,7 +113,7 @@ function simplifyExpr(expr) {
 }
 
 /** Convert math.js output like "2 * x" → "2x" for cleaner display */
-function formatDisplayExpr(expr) {
+export function formatDisplayExpr(expr) {
   return expr
     .replace(/(\d+)\s*\*\s*([a-zA-Z])/g, '$1$2')
     .replace(/(-)\s*\*\s*([a-zA-Z])/g, '-$2')

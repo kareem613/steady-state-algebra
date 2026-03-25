@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { applyOperation, buildOperationDisplay } from './algebraEngine'
+import { applyOperation, buildOperationDisplay, formatDisplayExpr } from './algebraEngine'
 
 const KEYPAD_ROWS = [
   ['+', '7', '8', '9'],
@@ -26,7 +26,8 @@ export default function GameplayScreen({ equation, onApply, onUndo, canUndo, sol
   const [input, setInput] = useState('')
   const [selectedOp, setSelectedOp] = useState(null)
 
-  const lhsParts = parseDisplayTerms(equation.lhsStr)
+  const lhsParts = parseDisplayTerms(formatDisplayExpr(equation.lhsStr))
+  const displayRhs = formatDisplayExpr(equation.rhsStr)
 
   function handleKey(key) {
     if (key === '⌫') {
@@ -89,7 +90,7 @@ export default function GameplayScreen({ equation, onApply, onUndo, canUndo, sol
                 </span>
               ))}
               <span className="text-outline-variant mx-4">=</span>
-              <span>{equation.rhsStr}</span>
+              <span>{displayRhs}</span>
             </div>
             <div className="mt-3 text-on-surface-variant font-medium tracking-widest uppercase text-xs">
               {solved ? 'Well done!' : 'Current Equilibrium'}
@@ -117,7 +118,7 @@ export default function GameplayScreen({ equation, onApply, onUndo, canUndo, sol
             </div>
             <div className="text-xl text-outline-variant mx-2">=</div>
             <div className="flex items-center text-xl md:text-3xl font-headline font-medium text-on-surface/50 line-through decoration-primary-container/40">
-              {equation.rhsStr}
+              {displayRhs}
             </div>
             <div className="flex items-center text-2xl md:text-4xl font-headline font-bold text-primary animate-pulse">
               <span className="mx-2 text-primary-fixed">{operationLabel.charAt(0)}</span>
