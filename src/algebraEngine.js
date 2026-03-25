@@ -102,9 +102,13 @@ export function applyOperation(equationStr, op, value) {
 
 function simplifyExpr(expr) {
   try {
-    return math.simplify(expr).toString()
+    // simplify first (arithmetic, cancellation), then rationalize to expand factored forms
+    const simplified = math.simplify(expr).toString()
+    return math.rationalize(simplified).toString()
   } catch {
-    return math.evaluate(expr)?.toString() ?? expr
+    try { return math.rationalize(expr).toString() } catch {
+      try { return math.simplify(expr).toString() } catch { return expr }
+    }
   }
 }
 

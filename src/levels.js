@@ -3,7 +3,7 @@
  *
  * Level 1 — One-step equations: a single add/subtract or multiply/divide to isolate x.
  * Level 2 — Two-step equations: two operations required (add/subtract then multiply/divide).
- * Level 3 — Two-step equations with larger coefficients and constants.
+ * Level 3 — Variables on both sides: collect x terms first, then isolate.
  */
 
 export const LEVELS = [
@@ -37,14 +37,14 @@ export const LEVELS = [
   {
     number: 3,
     label: 'Level 3',
-    description: 'Harder',
+    description: 'x on both sides',
     equations: [
-      { lhsStr: '6 * x + 12', rhsStr: '30' },
-      { lhsStr: '7 * x - 14', rhsStr: '21' },
-      { lhsStr: '4 * x + 16', rhsStr: '40' },
-      { lhsStr: '9 * x - 18', rhsStr: '27' },
-      { lhsStr: '5 * x + 25', rhsStr: '50' },
-      { lhsStr: '8 * x - 24', rhsStr: '32' },
+      { lhsStr: '5 * x + 3',  rhsStr: '2 * x + 12' },
+      { lhsStr: '4 * x - 5',  rhsStr: 'x + 10'     },
+      { lhsStr: '6 * x + 2',  rhsStr: '2 * x + 18' },
+      { lhsStr: '3 * x + 8',  rhsStr: 'x + 16'     },
+      { lhsStr: '7 * x - 3',  rhsStr: '4 * x + 9'  },
+      { lhsStr: '5 * x - 4',  rhsStr: '2 * x + 11' },
     ],
   },
 ]
