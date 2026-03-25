@@ -92,9 +92,11 @@ export default function GameplayScreen({ equation, onApply, onUndo, canUndo, sol
               <span className="text-outline-variant mx-4">=</span>
               <span>{displayRhs}</span>
             </div>
-            <div className="mt-3 text-on-surface-variant font-medium tracking-widest uppercase text-xs">
-              {solved ? 'Well done!' : 'Current Equilibrium'}
-            </div>
+            {solved && (
+              <div className="mt-3 text-on-surface-variant font-medium tracking-widest uppercase text-xs">
+                Well done!
+              </div>
+            )}
           </div>
         </section>
       </main>
