@@ -22,7 +22,7 @@ const KEY_TO_OP = {
  * Lets the user type an operation to apply to both sides of the equation.
  * On submit, shows a preview via the Ghost Preview state.
  */
-export default function GameplayScreen({ equation, onPreview }) {
+export default function GameplayScreen({ equation, onApply }) {
   const [input, setInput] = useState('')
   const [selectedOp, setSelectedOp] = useState('subtract')
 
@@ -48,7 +48,8 @@ export default function GameplayScreen({ equation, onPreview }) {
     if (!input.trim()) return
     const result = applyOperation(`${equation.lhsStr} = ${equation.rhsStr}`, selectedOp, input.trim())
     if (result.isValid) {
-      onPreview(result)
+      setInput('')
+      onApply(result)
     }
   }
 
@@ -127,14 +128,7 @@ export default function GameplayScreen({ equation, onPreview }) {
                   className="flex-1 py-3 px-4 rounded-xl bg-error-container text-on-error-container font-headline font-bold flex items-center justify-center gap-2 active:scale-95 transition-all text-sm"
                 >
                   <span className="material-symbols-outlined text-base">close</span>
-                  REJECT
-                </button>
-                <button
-                  onClick={handleSubmit}
-                  className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-br from-primary to-primary-container text-on-primary-container font-headline font-bold flex items-center justify-center gap-2 active:scale-95 transition-all shadow-[0_8px_32px_rgba(59,191,250,0.2)] text-sm"
-                >
-                  <span className="material-symbols-outlined text-base">check</span>
-                  ACCEPT
+                  CLEAR
                 </button>
               </div>
             </div>

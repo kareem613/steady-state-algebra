@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import GameplayScreen from './GameplayScreen'
-import GhostPreviewScreen from './GhostPreviewScreen'
 import { isSolved } from './algebraEngine'
 
 const INITIAL_EQUATION = {
@@ -10,32 +9,17 @@ const INITIAL_EQUATION = {
 
 export default function App() {
   const [equation, setEquation] = useState(INITIAL_EQUATION)
-  const [screen, setScreen] = useState('gameplay') // 'gameplay' | 'ghost'
-  const [pendingOperation, setPendingOperation] = useState(null)
   const [solved, setSolved] = useState(false)
 
-  function handlePreview(operationResult) {
-    setPendingOperation(operationResult)
-    setScreen('ghost')
-  }
-
-  function handleAccept() {
-    if (!pendingOperation) return
+  function handleApply(operationResult) {
     const next = {
-      lhsStr: pendingOperation.newLhsSimplified,
-      rhsStr: pendingOperation.newRhsSimplified,
+      lhsStr: operationResult.newLhsSimplified,
+      rhsStr: operationResult.newRhsSimplified,
     }
     setEquation(next)
-    setPendingOperation(null)
-    setScreen('gameplay')
     if (isSolved(`${next.lhsStr} = ${next.rhsStr}`)) {
       setSolved(true)
     }
-  }
-
-  function handleBack() {
-    setPendingOperation(null)
-    setScreen('gameplay')
   }
 
   if (solved) {
@@ -58,21 +42,10 @@ export default function App() {
     )
   }
 
-  if (screen === 'ghost' && pendingOperation) {
-    return (
-      <GhostPreviewScreen
-        equation={equation}
-        operation={pendingOperation}
-        onAccept={handleAccept}
-        onBack={handleBack}
-      />
-    )
-  }
-
   return (
     <GameplayScreen
       equation={equation}
-      onPreview={handlePreview}
+      onApply={handleApply}
     />
   )
 }
