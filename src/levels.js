@@ -4,53 +4,73 @@
  * Level 1 — One-step equations: a single add/subtract or multiply/divide to isolate x.
  * Level 2 — Two-step equations: two operations required (add/subtract then multiply/divide).
  * Level 3 — Variables on both sides: collect x terms first, then isolate.
+ *
+ * All equations are randomly generated with guaranteed integer solutions.
  */
 
 export const LEVELS = [
-  {
-    number: 1,
-    label: 'Level 1',
-    description: 'One step',
-    equations: [
-      { lhsStr: 'x + 5',   rhsStr: '9'  },
-      { lhsStr: 'x + 8',   rhsStr: '12' },
-      { lhsStr: 'x - 3',   rhsStr: '7'  },
-      { lhsStr: 'x - 6',   rhsStr: '2'  },
-      { lhsStr: '2 * x',   rhsStr: '10' },
-      { lhsStr: '3 * x',   rhsStr: '12' },
-      { lhsStr: '4 * x',   rhsStr: '20' },
-    ],
-  },
-  {
-    number: 2,
-    label: 'Level 2',
-    description: 'Two steps',
-    equations: [
-      { lhsStr: '2 * x + 4',  rhsStr: '12' },
-      { lhsStr: '3 * x + 6',  rhsStr: '12' },
-      { lhsStr: '2 * x - 4',  rhsStr: '8'  },
-      { lhsStr: '3 * x - 3',  rhsStr: '9'  },
-      { lhsStr: '4 * x + 8',  rhsStr: '16' },
-      { lhsStr: '5 * x - 10', rhsStr: '15' },
-    ],
-  },
-  {
-    number: 3,
-    label: 'Level 3',
-    description: 'x on both sides',
-    equations: [
-      { lhsStr: '5 * x + 3',  rhsStr: '2 * x + 12' },
-      { lhsStr: '4 * x - 5',  rhsStr: 'x + 10'     },
-      { lhsStr: '6 * x + 2',  rhsStr: '2 * x + 18' },
-      { lhsStr: '3 * x + 8',  rhsStr: 'x + 16'     },
-      { lhsStr: '7 * x - 3',  rhsStr: '4 * x + 9'  },
-      { lhsStr: '5 * x - 4',  rhsStr: '2 * x + 11' },
-    ],
-  },
+  { number: 1, label: 'Level 1', description: 'One step' },
+  { number: 2, label: 'Level 2', description: 'Two steps' },
+  { number: 3, label: 'Level 3', description: 'x on both sides' },
 ]
 
-/** Return a random equation from a level's pool. */
+function rand(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
+function randNonZero(min, max) {
+  let v
+  do { v = rand(min, max) } while (v === 0)
+  return v
+}
+
+function formatLhs(a, b) {
+  const aStr = a === 1 ? 'x' : `${a} * x`
+  if (b === 0) return aStr
+  return b > 0 ? `${aStr} + ${b}` : `${aStr} - ${Math.abs(b)}`
+}
+
+function formatRhs(c, d) {
+  const cStr = c === 1 ? 'x' : `${c} * x`
+  if (d === 0) return cStr
+  return d > 0 ? `${cStr} + ${d}` : `${cStr} - ${Math.abs(d)}`
+}
+
+/**
+ * Generate a random equation for the given level index (0-based).
+ * All solutions are guaranteed integers.
+ */
 export function pickEquation(level) {
-  const pool = level.equations
-  return pool[Math.floor(Math.random() * pool.length)]
+  const idx = level.number - 1
+
+  if (idx === 0) {
+    // Level 1: one-step — x + b = c  OR  a*x = c
+    const x = randNonZero(-10, 10)
+    const useMultiply = Math.random() < 0.5
+    if (useMultiply) {
+      const a = randNonZero(2, 6)
+      return { lhsStr: `${a} * x`, rhsStr: String(a * x) }
+    } else {
+      const b = randNonZero(-8, 8)
+      const lhs = b > 0 ? `x + ${b}` : `x - ${Math.abs(b)}`
+      return { lhsStr: lhs, rhsStr: String(x + b) }
+    }
+  }
+
+  if (idx === 1) {
+    // Level 2: two-step — a*x + b = c  where a ≥ 2
+    const x = randNonZero(-8, 8)
+    const a = randNonZero(2, 5)
+    const b = randNonZero(-10, 10)
+    const c = a * x + b
+    return { lhsStr: formatLhs(a, b), rhsStr: String(c) }
+  }
+
+  // Level 3: x on both sides — a*x + b = c*x + d  where (a - c) ≠ 0
+  const x = randNonZero(-8, 8)
+  const a = randNonZero(3, 7)
+  const c = rand(1, a - 1)  // c < a so LHS has larger coefficient
+  const b = randNonZero(-10, 10)
+  const d = (a - c) * x + b  // ensures equation has integer solution x
+  return { lhsStr: formatLhs(a, b), rhsStr: formatRhs(c, d) }
 }
