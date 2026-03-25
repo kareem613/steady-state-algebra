@@ -61,13 +61,6 @@ export default function GameplayScreen({ equation, onPreview }) {
 
   const operationLabel = input ? buildOperationDisplay(selectedOp, input) : null
 
-  const opLabel = {
-    add: 'add',
-    subtract: 'subtract',
-    multiply: 'multiply by',
-    divide: 'divide by',
-  }[selectedOp]
-
   return (
     <div className="bg-background text-on-background font-body h-[100dvh] flex flex-col overflow-hidden dark">
       {/* TopAppBar */}
@@ -155,15 +148,6 @@ export default function GameplayScreen({ equation, onPreview }) {
           </section>
         )}
 
-        {/* Command Prompt */}
-        <div className="w-full max-w-md flex flex-col items-center">
-          <div className="bg-surface-container-lowest px-6 py-2 rounded-full border-b-2 border-primary flex items-center gap-3">
-            <span className="font-mono text-primary font-bold tracking-widest text-lg animate-pulse">&gt;</span>
-            <span className="font-headline text-lg text-on-background font-medium">
-              {input ? `${opLabel} ${input}` : <span className="text-on-surface-variant">enter a value...</span>}
-            </span>
-          </div>
-        </div>
       </main>
 
       {/* Keypad */}
