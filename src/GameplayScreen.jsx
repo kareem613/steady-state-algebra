@@ -54,7 +54,8 @@ export default function GameplayScreen({ equation, onApply, onUndo, canUndo, sol
     }
   }
 
-  const operationLabel = (input && selectedOp) ? buildOperationDisplay(selectedOp, input) : null
+  const operationLabel = buildOperationDisplay(selectedOp || 'subtract', input || '?')
+  const hasPreview = !!(input || selectedOp)
 
   return (
     <div className="bg-background text-on-background font-body h-[100dvh] flex flex-col overflow-hidden dark">
@@ -68,17 +69,16 @@ export default function GameplayScreen({ equation, onApply, onUndo, canUndo, sol
       </header>
 
       {/* Main Sandbox Canvas */}
-      {/* Layout: equation pinned to top half, ghost preview always occupies its space below */}
       <main className="flex-1 flex flex-col items-center px-4 relative overflow-hidden"
-            style={{ paddingTop: '64px', paddingBottom: 'clamp(320px, 62vw, 540px)' }}>
+            style={{ paddingTop: '64px', paddingBottom: 'clamp(280px, 58vw, 500px)' }}>
         {/* Decorative Background */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
           <div className="absolute -top-24 -left-24 w-96 h-96 bg-primary/20 rounded-full blur-[120px]" />
           <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-secondary/10 rounded-full blur-[120px]" />
         </div>
 
-        {/* Equation Display — centered in the top zone above the ghost preview */}
-        <div className="flex-1 flex items-center justify-center w-full max-w-2xl">
+        {/* Equation Display — takes top half of available space */}
+        <div className="flex-1 flex items-center justify-center w-full max-w-2xl min-h-0">
           <section className="w-full text-center">
             <div className={`p-6 md:p-10 rounded-2xl relative transition-colors ${solved ? 'bg-secondary/10' : 'bg-surface-container-low'}`}>
               {solved && (
@@ -100,38 +100,41 @@ export default function GameplayScreen({ equation, onApply, onUndo, canUndo, sol
           </section>
         </div>
 
-        {/* Ghost Preview — always rendered at full size to keep equation position stable */}
-        <section className={`w-full max-w-3xl mb-4 flex flex-col items-center transition-opacity duration-300 ${operationLabel ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+        {/* Ghost Preview — always rendered at same size; fades in/out */}
+        <section
+          className="w-full max-w-3xl mb-2 flex-shrink-0 flex flex-col items-center transition-opacity duration-300"
+          style={{ opacity: hasPreview ? 1 : 0, pointerEvents: hasPreview ? 'auto' : 'none' }}
+        >
           <div
-            className="border-2 border-dashed border-primary/20 p-4 md:p-8 rounded-[2rem] w-full flex flex-col items-center"
+            className="border-2 border-dashed border-primary/20 p-4 rounded-[2rem] w-full flex flex-col items-center"
             style={{ backdropFilter: 'blur(16px)', background: 'rgba(21,38,63,0.4)' }}
           >
-            <div className="flex flex-wrap items-center justify-center gap-2 md:gap-4 mb-4">
+            <div className="flex flex-wrap items-center justify-center gap-2 md:gap-4 mb-3">
               {/* LHS crossed out */}
-              <div className="flex items-center text-2xl md:text-4xl font-headline font-medium text-on-surface/50 line-through decoration-primary-container/40">
+              <div className="flex items-center text-xl md:text-3xl font-headline font-medium text-on-surface/50 line-through decoration-primary-container/40">
                 {lhsParts.map((p, i) => <span key={i}>{p.text}</span>)}
               </div>
               {/* Ghost op LHS */}
-              <div className="flex items-center text-3xl md:text-5xl font-headline font-bold text-primary animate-pulse">
-                <span className="mx-2 text-primary-fixed">{operationLabel ? operationLabel.charAt(0) : ''}</span>
-                <span>{operationLabel ? operationLabel.slice(1).trim() : ''}</span>
+              <div className="flex items-center text-2xl md:text-4xl font-headline font-bold text-primary animate-pulse">
+                <span className="mx-2 text-primary-fixed">{operationLabel.charAt(0)}</span>
+                <span>{operationLabel.slice(1).trim()}</span>
               </div>
-              <div className="text-2xl text-outline-variant mx-2">=</div>
+              <div className="text-xl text-outline-variant mx-2">=</div>
               {/* RHS crossed out */}
-              <div className="flex items-center text-2xl md:text-4xl font-headline font-medium text-on-surface/50 line-through decoration-primary-container/40">
+              <div className="flex items-center text-xl md:text-3xl font-headline font-medium text-on-surface/50 line-through decoration-primary-container/40">
                 {equation.rhsStr}
               </div>
               {/* Ghost op RHS */}
-              <div className="flex items-center text-3xl md:text-5xl font-headline font-bold text-primary animate-pulse">
-                <span className="mx-2 text-primary-fixed">{operationLabel ? operationLabel.charAt(0) : ''}</span>
-                <span>{operationLabel ? operationLabel.slice(1).trim() : ''}</span>
+              <div className="flex items-center text-2xl md:text-4xl font-headline font-bold text-primary animate-pulse">
+                <span className="mx-2 text-primary-fixed">{operationLabel.charAt(0)}</span>
+                <span>{operationLabel.slice(1).trim()}</span>
               </div>
             </div>
 
             <div className="flex gap-4 w-full max-w-xs">
               <button
                 onClick={() => { setInput(''); setSelectedOp(null) }}
-                className="flex-1 py-3 px-4 rounded-xl bg-error-container text-on-error-container font-headline font-bold flex items-center justify-center gap-2 active:scale-95 transition-all text-sm"
+                className="flex-1 py-2 px-4 rounded-xl bg-error-container text-on-error-container font-headline font-bold flex items-center justify-center gap-2 active:scale-95 transition-all text-sm"
               >
                 <span className="material-symbols-outlined text-base">close</span>
                 CLEAR
