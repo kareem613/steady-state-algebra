@@ -1,17 +1,16 @@
 import { useState } from 'react'
 import GameplayScreen from './GameplayScreen'
-import LevelSelectScreen from './LevelSelectScreen'
 import { isSolved } from './algebraEngine'
-import { pickEquation } from './levels'
+import { LEVELS, pickEquation } from './levels'
 
 export default function App() {
-  const [selectedLevel, setSelectedLevel] = useState(null)
-  const [equation, setEquation] = useState(null)
+  const [levelIndex, setLevelIndex] = useState(0)
+  const [equation, setEquation] = useState(() => pickEquation(LEVELS[0]))
   const [solved, setSolved] = useState(false)
 
-  function handleSelectLevel(level) {
-    setSelectedLevel(level)
-    setEquation(pickEquation(level))
+  function handleLevelChange(newIndex) {
+    setLevelIndex(newIndex)
+    setEquation(pickEquation(LEVELS[newIndex]))
     setSolved(false)
   }
 
@@ -26,20 +25,21 @@ export default function App() {
     }
   }
 
-  // Show level selector on first launch or after solving
-  if (!selectedLevel || solved) {
-    return (
-      <LevelSelectScreen
-        onSelect={handleSelectLevel}
-        solvedEquation={solved ? equation : null}
-      />
-    )
+  function handleNextPuzzle() {
+    setEquation(pickEquation(LEVELS[levelIndex]))
+    setSolved(false)
   }
 
   return (
     <GameplayScreen
       equation={equation}
       onApply={handleApply}
+      solved={solved}
+      onNextPuzzle={handleNextPuzzle}
+      levelIndex={levelIndex}
+      levelCount={LEVELS.length}
+      levelLabel={LEVELS[levelIndex].label}
+      onLevelChange={handleLevelChange}
     />
   )
 }

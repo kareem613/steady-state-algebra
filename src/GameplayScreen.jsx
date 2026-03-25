@@ -22,7 +22,7 @@ const KEY_TO_OP = {
  * Lets the user type an operation to apply to both sides of the equation.
  * On submit, shows a preview via the Ghost Preview state.
  */
-export default function GameplayScreen({ equation, onApply }) {
+export default function GameplayScreen({ equation, onApply, solved, onNextPuzzle, levelIndex, levelCount, levelLabel, onLevelChange }) {
   const [input, setInput] = useState('')
   const [selectedOp, setSelectedOp] = useState(null)
 
@@ -78,8 +78,11 @@ export default function GameplayScreen({ equation, onApply }) {
 
         {/* Equation Display */}
         <section className="w-full max-w-2xl mb-6 text-center">
-          <div className="bg-surface-container-low p-6 md:p-10 rounded-2xl relative">
-            <div className="font-headline font-bold tracking-tighter text-on-background flex flex-wrap items-center justify-center text-3xl md:text-5xl gap-2">
+          <div className={`p-6 md:p-10 rounded-2xl relative transition-colors ${solved ? 'bg-secondary/10' : 'bg-surface-container-low'}`}>
+            {solved && (
+              <div className="text-secondary font-headline font-bold text-3xl mb-2">✓ Solved!</div>
+            )}
+            <div className={`font-headline font-bold tracking-tighter text-on-background flex flex-wrap items-center justify-center text-3xl md:text-5xl gap-2 ${solved ? 'opacity-50' : ''}`}>
               {lhsParts.map((part, i) => (
                 <span key={i} className={part.isOp ? 'text-primary' : part.isVar ? 'font-mono italic' : ''}>
                   {part.text}
@@ -89,7 +92,7 @@ export default function GameplayScreen({ equation, onApply }) {
               <span>{equation.rhsStr}</span>
             </div>
             <div className="mt-3 text-on-surface-variant font-medium tracking-widest uppercase text-xs">
-              Current Equilibrium
+              {solved ? 'Well done!' : 'Current Equilibrium'}
             </div>
           </div>
         </section>
@@ -170,13 +173,44 @@ export default function GameplayScreen({ equation, onApply }) {
 
           {/* Execution Block */}
           <div className="w-full md:w-48 flex flex-col gap-3">
-            <button
-              onClick={handleSubmit}
-              className="flex-1 bg-gradient-to-br from-primary to-primary-container text-on-primary-container rounded-[1.5rem] font-headline font-extrabold text-2xl tracking-tight uppercase shadow-[0_12px_40px_rgba(34,177,236,0.3)] active:scale-95 transition-all flex flex-col items-center justify-center gap-1 min-h-[120px]"
-            >
-              <span className="material-symbols-outlined text-4xl">send</span>
-              DO IT
-            </button>
+            {solved ? (
+              <button
+                onClick={onNextPuzzle}
+                className="flex-1 bg-gradient-to-br from-secondary to-secondary-container text-on-secondary-container rounded-[1.5rem] font-headline font-extrabold text-2xl tracking-tight uppercase shadow-[0_12px_40px_rgba(105,246,184,0.2)] active:scale-95 transition-all flex flex-col items-center justify-center gap-1 min-h-[120px]"
+              >
+                <span className="material-symbols-outlined text-4xl">replay</span>
+                NEXT
+              </button>
+            ) : (
+              <button
+                onClick={handleSubmit}
+                className="flex-1 bg-gradient-to-br from-primary to-primary-container text-on-primary-container rounded-[1.5rem] font-headline font-extrabold text-2xl tracking-tight uppercase shadow-[0_12px_40px_rgba(34,177,236,0.3)] active:scale-95 transition-all flex flex-col items-center justify-center gap-1 min-h-[120px]"
+              >
+                <span className="material-symbols-outlined text-4xl">send</span>
+                DO IT
+              </button>
+            )}
+
+            {/* Level selector */}
+            <div className="flex items-center justify-between bg-surface-container-low rounded-2xl px-3 py-2">
+              <button
+                onClick={() => onLevelChange(Math.max(0, levelIndex - 1))}
+                disabled={levelIndex === 0}
+                className="w-9 h-9 flex items-center justify-center rounded-xl text-primary disabled:opacity-30 hover:bg-surface-container active:scale-90 transition-all"
+              >
+                <span className="material-symbols-outlined">chevron_left</span>
+              </button>
+              <span className="font-headline font-bold text-sm text-on-surface tracking-widest uppercase">
+                {levelLabel}
+              </span>
+              <button
+                onClick={() => onLevelChange(Math.min(levelCount - 1, levelIndex + 1))}
+                disabled={levelIndex === levelCount - 1}
+                className="w-9 h-9 flex items-center justify-center rounded-xl text-primary disabled:opacity-30 hover:bg-surface-container active:scale-90 transition-all"
+              >
+                <span className="material-symbols-outlined">chevron_right</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
