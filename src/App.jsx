@@ -3,14 +3,28 @@ import GameplayScreen from './GameplayScreen'
 import { isSolved } from './algebraEngine'
 import { LEVELS, pickEquation } from './levels'
 
+const LEVEL_KEY = 'ssa-level-index'
+
+function getSavedLevelIndex() {
+  try {
+    const saved = localStorage.getItem(LEVEL_KEY)
+    if (saved !== null) {
+      const parsed = parseInt(saved, 10)
+      if (parsed >= 0 && parsed < LEVELS.length) return parsed
+    }
+  } catch {}
+  return 0
+}
+
 export default function App() {
-  const [levelIndex, setLevelIndex] = useState(0)
-  const [equation, setEquation] = useState(() => pickEquation(LEVELS[0]))
+  const [levelIndex, setLevelIndex] = useState(getSavedLevelIndex)
+  const [equation, setEquation] = useState(() => pickEquation(LEVELS[getSavedLevelIndex()]))
   const [history, setHistory] = useState([]) // stack of previous equations
   const [solved, setSolved] = useState(false)
 
   function handleLevelChange(newIndex) {
     setLevelIndex(newIndex)
+    try { localStorage.setItem(LEVEL_KEY, String(newIndex)) } catch {}
     setEquation(pickEquation(LEVELS[newIndex]))
     setHistory([])
     setSolved(false)
