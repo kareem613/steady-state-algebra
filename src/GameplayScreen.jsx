@@ -10,6 +10,13 @@ const KEYPAD_ROWS = [
 
 const OP_KEYS = ['/', '*', '-', '+']
 
+const KEY_TO_OP = {
+  '/': 'divide',
+  '*': 'multiply',
+  '-': 'subtract',
+  '+': 'add',
+}
+
 /**
  * Gameplay / Input Screen
  * Lets the user type an operation to apply to both sides of the equation.
@@ -30,15 +37,11 @@ export default function GameplayScreen({ equation, onPreview }) {
       setInput(prev => prev + 'x')
       return
     }
-    if (['+', '-', '*', '/'].includes(key)) {
-      // Let user pick op via keypad operator buttons
+    if (KEY_TO_OP[key]) {
+      setSelectedOp(KEY_TO_OP[key])
       return
     }
     setInput(prev => prev + key)
-  }
-
-  function handleOpButton(op) {
-    setSelectedOp(op)
   }
 
   function handleSubmit() {
@@ -159,23 +162,6 @@ export default function GameplayScreen({ equation, onPreview }) {
               {input ? `${opLabel} ${input}` : <span className="text-on-surface-variant">enter a value...</span>}
             </span>
           </div>
-
-          {/* Op Selector */}
-          <div className="flex gap-2 mb-4">
-            {[['subtract', '−'], ['add', '+'], ['multiply', '×'], ['divide', '÷']].map(([op, sym]) => (
-              <button
-                key={op}
-                onClick={() => handleOpButton(op)}
-                className={`px-4 py-2 rounded-full font-headline font-bold text-sm transition-all ${
-                  selectedOp === op
-                    ? 'bg-primary text-on-primary'
-                    : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-bright'
-                }`}
-              >
-                {sym}
-              </button>
-            ))}
-          </div>
         </div>
       </main>
 
@@ -190,12 +176,14 @@ export default function GameplayScreen({ equation, onPreview }) {
                   <button
                     key={`${ri}-${ci}`}
                     onClick={() => handleKey(key)}
-                    className={`h-14 rounded-2xl font-headline font-bold text-xl hover:bg-surface-bright transition-colors active:scale-90 ${
+                    className={`h-14 rounded-2xl font-headline font-bold text-xl transition-colors active:scale-90 ${
                       isOpKey
-                        ? 'bg-surface-container-highest text-primary text-2xl'
+                        ? KEY_TO_OP[key] === selectedOp
+                          ? 'bg-primary text-on-primary text-2xl shadow-[0_4px_16px_rgba(59,191,250,0.3)]'
+                          : 'bg-surface-container-highest text-primary text-2xl hover:bg-surface-bright'
                         : key === 'x'
-                        ? 'bg-surface-container-high text-primary italic font-mono'
-                        : 'bg-surface-container-high text-on-surface'
+                        ? 'bg-surface-container-high text-primary italic font-mono hover:bg-surface-bright'
+                        : 'bg-surface-container-high text-on-surface hover:bg-surface-bright'
                     }`}
                   >
                     {key === '⌫' ? (
