@@ -187,24 +187,27 @@ export default function GameplayScreen({ equation, onApply, onUndo, canUndo, sol
               </button>
             </div>
 
-            {/* Level selector */}
-            <div className="flex items-center justify-between bg-surface-container-low rounded-2xl px-3 py-1">
+            {/* Level selector — left/right 30% are tap zones */}
+            <div className="relative flex items-center justify-between bg-surface-container-low rounded-2xl overflow-hidden">
+              {/* Left tap zone (~30%) */}
               <button
                 onClick={() => onLevelChange(Math.max(0, levelIndex - 1))}
                 disabled={levelIndex === 0}
-                className="w-8 h-8 flex items-center justify-center rounded-xl text-primary disabled:opacity-30 hover:bg-surface-container active:scale-90 transition-all"
+                className="w-[30%] py-2 flex items-center justify-start pl-3 text-primary disabled:opacity-30 active:bg-surface-container transition-colors"
               >
-                <span className="material-symbols-outlined">chevron_left</span>
+                <span className="material-symbols-outlined text-base">chevron_left</span>
               </button>
-              <span className="font-headline font-bold text-sm text-on-surface tracking-widest uppercase">
+              {/* Center label (non-interactive) */}
+              <span className="flex-1 text-center font-headline font-bold text-sm text-on-surface tracking-widest uppercase pointer-events-none select-none">
                 {levelLabel}
               </span>
+              {/* Right tap zone (~30%) */}
               <button
                 onClick={() => onLevelChange(Math.min(levelCount - 1, levelIndex + 1))}
                 disabled={levelIndex === levelCount - 1}
-                className="w-8 h-8 flex items-center justify-center rounded-xl text-primary disabled:opacity-30 hover:bg-surface-container active:scale-90 transition-all"
+                className="w-[30%] py-2 flex items-center justify-end pr-3 text-primary disabled:opacity-30 active:bg-surface-container transition-colors"
               >
-                <span className="material-symbols-outlined">chevron_right</span>
+                <span className="material-symbols-outlined text-base">chevron_right</span>
               </button>
             </div>
           </div>
