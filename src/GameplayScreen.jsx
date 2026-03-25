@@ -1,0 +1,255 @@
+import { useState } from 'react'
+import { applyOperation, buildOperationDisplay } from './algebraEngine'
+
+const KEYPAD_ROWS = [
+  ['7', '8', '9', '/'],
+  ['4', '5', '6', '*'],
+  ['1', '2', '3', '-'],
+  ['0', 'x', '⌫', '+'],
+]
+
+const OP_KEYS = ['/', '*', '-', '+']
+
+/**
+ * Gameplay / Input Screen
+ * Lets the user type an operation to apply to both sides of the equation.
+ * On submit, shows a preview via the Ghost Preview state.
+ */
+export default function GameplayScreen({ equation, onPreview }) {
+  const [input, setInput] = useState('')
+  const [selectedOp, setSelectedOp] = useState('subtract')
+
+  const lhsParts = parseDisplayTerms(equation.lhsStr)
+
+  function handleKey(key) {
+    if (key === '⌫') {
+      setInput(prev => prev.slice(0, -1))
+      return
+    }
+    if (key === 'x') {
+      setInput(prev => prev + 'x')
+      return
+    }
+    if (['+', '-', '*', '/'].includes(key)) {
+      // Let user pick op via keypad operator buttons
+      return
+    }
+    setInput(prev => prev + key)
+  }
+
+  function handleOpButton(op) {
+    setSelectedOp(op)
+  }
+
+  function handleSubmit() {
+    if (!input.trim()) return
+    const result = applyOperation(`${equation.lhsStr} = ${equation.rhsStr}`, selectedOp, input.trim())
+    if (result.isValid) {
+      onPreview(result)
+    }
+  }
+
+  function handleSimplify() {
+    const result = applyOperation(`${equation.lhsStr} = ${equation.rhsStr}`, 'add', '0')
+    if (result.isValid) {
+      onPreview({ ...result, operationLabel: 'simplify' })
+    }
+  }
+
+  const operationLabel = input ? buildOperationDisplay(selectedOp, input) : null
+
+  const opLabel = {
+    add: 'add',
+    subtract: 'subtract',
+    multiply: 'multiply by',
+    divide: 'divide by',
+  }[selectedOp]
+
+  return (
+    <div className="bg-background text-on-background font-body min-h-screen flex flex-col overflow-hidden dark">
+      {/* TopAppBar */}
+      <header className="bg-slate-950/80 backdrop-blur-xl fixed top-0 w-full z-50 shadow-[0_4px_24px_rgba(219,230,254,0.06)]">
+        <div className="flex items-center justify-between px-6 h-16 w-full">
+          <h1 className="text-xl font-bold text-sky-400 tracking-widest uppercase font-headline tracking-tight">
+            STEADY STATE
+          </h1>
+        </div>
+      </header>
+
+      {/* Main Sandbox Canvas */}
+      <main className="flex-1 flex flex-col items-center justify-center p-6 mt-16 mb-20 relative">
+        {/* Decorative Background */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
+          <div className="absolute -top-24 -left-24 w-96 h-96 bg-primary/20 rounded-full blur-[120px]" />
+          <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-secondary/10 rounded-full blur-[120px]" />
+        </div>
+
+        {/* Equation Display */}
+        <section className="w-full max-w-2xl mb-12 text-center">
+          <div className="bg-surface-container-low p-10 rounded-2xl relative">
+            <div className="font-headline font-bold tracking-tighter text-on-background flex flex-wrap items-center justify-center text-4xl md:text-5xl gap-2">
+              {lhsParts.map((part, i) => (
+                <span key={i} className={part.isOp ? 'text-primary' : part.isVar ? 'font-mono italic' : ''}>
+                  {part.text}
+                </span>
+              ))}
+              <span className="text-outline-variant mx-4">=</span>
+              <span>{equation.rhsStr}</span>
+            </div>
+            <div className="mt-4 text-on-surface-variant font-medium tracking-widest uppercase text-xs">
+              Current Equilibrium
+            </div>
+          </div>
+        </section>
+
+        {/* Ghost Preview of Proposed Change */}
+        {operationLabel && (
+          <section className="w-full max-w-3xl mb-8 flex flex-col items-center">
+            <div
+              className="border-2 border-dashed border-primary/20 p-8 rounded-[2rem] w-full flex flex-col items-center transition-all duration-500"
+              style={{ backdropFilter: 'blur(16px)', background: 'rgba(21,38,63,0.4)' }}
+            >
+              <div className="flex flex-wrap items-center justify-center gap-2 md:gap-4 mb-8">
+                {/* LHS crossed out */}
+                <div className="flex items-center text-3xl md:text-4xl font-headline font-medium text-on-surface/50 line-through decoration-primary-container/40">
+                  {lhsParts.map((p, i) => <span key={i}>{p.text}</span>)}
+                </div>
+                {/* Ghost op LHS */}
+                <div className="flex items-center text-4xl md:text-5xl font-headline font-bold text-primary animate-pulse">
+                  <span className="mx-2 text-primary-fixed">{operationLabel.charAt(0)}</span>
+                  <span>{operationLabel.slice(1).trim()}</span>
+                </div>
+                <div className="text-3xl text-outline-variant mx-4">=</div>
+                {/* RHS crossed out */}
+                <div className="flex items-center text-3xl md:text-4xl font-headline font-medium text-on-surface/50 line-through decoration-primary-container/40">
+                  {equation.rhsStr}
+                </div>
+                {/* Ghost op RHS */}
+                <div className="flex items-center text-4xl md:text-5xl font-headline font-bold text-primary animate-pulse">
+                  <span className="mx-2 text-primary-fixed">{operationLabel.charAt(0)}</span>
+                  <span>{operationLabel.slice(1).trim()}</span>
+                </div>
+              </div>
+
+              <div className="flex gap-4 w-full max-w-xs">
+                <button
+                  onClick={() => setInput('')}
+                  className="flex-1 py-4 px-6 rounded-xl bg-error-container text-on-error-container font-headline font-bold flex items-center justify-center gap-2 active:scale-95 transition-all"
+                >
+                  <span className="material-symbols-outlined">close</span>
+                  REJECT
+                </button>
+                <button
+                  onClick={handleSubmit}
+                  className="flex-1 py-4 px-6 rounded-xl bg-gradient-to-br from-primary to-primary-container text-on-primary-container font-headline font-bold flex items-center justify-center gap-2 active:scale-95 transition-all shadow-[0_8px_32px_rgba(59,191,250,0.2)]"
+                >
+                  <span className="material-symbols-outlined">check</span>
+                  ACCEPT
+                </button>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Command Prompt */}
+        <div className="w-full max-w-md mb-4 flex flex-col items-center">
+          <div className="bg-surface-container-lowest px-6 py-2 rounded-full mb-6 border-b-2 border-primary flex items-center gap-3">
+            <span className="font-mono text-primary font-bold tracking-widest text-lg animate-pulse">&gt;</span>
+            <span className="font-headline text-lg text-on-background font-medium">
+              {input ? `${opLabel} ${input}` : <span className="text-on-surface-variant">enter a value...</span>}
+            </span>
+          </div>
+
+          {/* Op Selector */}
+          <div className="flex gap-2 mb-4">
+            {[['subtract', '−'], ['add', '+'], ['multiply', '×'], ['divide', '÷']].map(([op, sym]) => (
+              <button
+                key={op}
+                onClick={() => handleOpButton(op)}
+                className={`px-4 py-2 rounded-full font-headline font-bold text-sm transition-all ${
+                  selectedOp === op
+                    ? 'bg-primary text-on-primary'
+                    : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-bright'
+                }`}
+              >
+                {sym}
+              </button>
+            ))}
+          </div>
+        </div>
+      </main>
+
+      {/* Keypad */}
+      <div className="fixed bottom-0 left-0 w-full z-40 bg-slate-900/95 backdrop-blur-2xl rounded-t-[2.5rem] p-6 pb-8 shadow-[0_-20px_50px_rgba(0,0,0,0.4)]">
+        <div className="max-w-4xl mx-auto flex flex-col md:flex-row gap-6">
+          <div className="grid grid-cols-4 gap-3 flex-1">
+            {KEYPAD_ROWS.map((row, ri) =>
+              row.map((key, ci) => {
+                const isOpKey = OP_KEYS.includes(key)
+                return (
+                  <button
+                    key={`${ri}-${ci}`}
+                    onClick={() => handleKey(key)}
+                    className={`h-14 rounded-2xl font-headline font-bold text-xl hover:bg-surface-bright transition-colors active:scale-90 ${
+                      isOpKey
+                        ? 'bg-surface-container-highest text-primary text-2xl'
+                        : key === 'x'
+                        ? 'bg-surface-container-high text-primary italic font-mono'
+                        : 'bg-surface-container-high text-on-surface'
+                    }`}
+                  >
+                    {key === '⌫' ? (
+                      <span className="material-symbols-outlined">backspace</span>
+                    ) : key === '*' ? '×' : key === '/' ? '÷' : key}
+                  </button>
+                )
+              })
+            )}
+          </div>
+
+          {/* Execution Block */}
+          <div className="w-full md:w-48 flex flex-col gap-3">
+            <button
+              onClick={handleSubmit}
+              className="flex-1 bg-gradient-to-br from-primary to-primary-container text-on-primary-container rounded-[1.5rem] font-headline font-extrabold text-2xl tracking-tight uppercase shadow-[0_12px_40px_rgba(34,177,236,0.3)] active:scale-95 transition-all flex flex-col items-center justify-center gap-1 min-h-[120px]"
+            >
+              <span className="material-symbols-outlined text-4xl">send</span>
+              DO IT
+            </button>
+            <button
+              onClick={handleSimplify}
+              className="h-14 rounded-2xl bg-surface-container-low text-on-surface-variant font-headline font-bold text-xs uppercase tracking-widest hover:bg-surface-container transition-colors"
+            >
+              Simplify
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <style>{`
+        .material-symbols-outlined {
+          font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+          font-family: 'Material Symbols Outlined';
+        }
+      `}</style>
+    </div>
+  )
+}
+
+/** Split an expression string into displayable term parts with metadata */
+function parseDisplayTerms(expr) {
+  const parts = []
+  let current = ''
+  for (let i = 0; i < expr.length; i++) {
+    const ch = expr[i]
+    if ((ch === '+' || ch === '-') && i > 0) {
+      if (current.trim()) parts.push({ text: current.trim(), isOp: false, isVar: /[a-z]/i.test(current) })
+      parts.push({ text: ` ${ch} `, isOp: true, isVar: false })
+      current = ''
+    } else {
+      current += ch
+    }
+  }
+  if (current.trim()) parts.push({ text: current.trim(), isOp: false, isVar: /[a-z]/i.test(current) })
+  return parts
+}
