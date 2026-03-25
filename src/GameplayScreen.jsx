@@ -68,75 +68,73 @@ export default function GameplayScreen({ equation, onApply, onUndo, canUndo, sol
         </div>
       </header>
 
-      {/* Content area — fills all space between header and keypad */}
-      <main className="flex-1 flex flex-col items-center px-4 relative overflow-hidden min-h-0">
+      {/* Content area — equation only, fills remaining space */}
+      <main className="flex-1 flex items-center justify-center px-4 relative overflow-hidden min-h-0">
         {/* Decorative Background */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
           <div className="absolute -top-24 -left-24 w-96 h-96 bg-primary/20 rounded-full blur-[120px]" />
           <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-secondary/10 rounded-full blur-[120px]" />
         </div>
 
-        {/* Equation Display — fills available space, centers content vertically */}
-        <div className="flex-1 flex items-center justify-center w-full max-w-2xl min-h-0">
-          <section className="w-full text-center">
-            <div className={`p-5 md:p-10 rounded-2xl relative transition-colors ${solved ? 'bg-secondary/10' : 'bg-surface-container-low'}`}>
-              {solved && (
-                <div className="text-secondary font-headline font-bold text-3xl mb-2">✓ Solved!</div>
-              )}
-              <div className={`font-headline font-bold tracking-tighter text-on-background flex flex-wrap items-center justify-center text-3xl md:text-5xl gap-2 ${solved ? 'opacity-50' : ''}`}>
-                {lhsParts.map((part, i) => (
-                  <span key={i} className={part.isOp ? 'text-primary' : part.isVar ? 'font-mono italic' : ''}>
-                    {part.text}
-                  </span>
-                ))}
-                <span className="text-outline-variant mx-4">=</span>
-                <span>{equation.rhsStr}</span>
-              </div>
-              <div className="mt-3 text-on-surface-variant font-medium tracking-widest uppercase text-xs">
-                {solved ? 'Well done!' : 'Current Equilibrium'}
-              </div>
+        {/* Equation Display */}
+        <section className="w-full max-w-2xl text-center z-10">
+          <div className={`p-5 md:p-10 rounded-2xl relative transition-colors ${solved ? 'bg-secondary/10' : 'bg-surface-container-low'}`}>
+            {solved && (
+              <div className="text-secondary font-headline font-bold text-3xl mb-2">✓ Solved!</div>
+            )}
+            <div className={`font-headline font-bold tracking-tighter text-on-background flex flex-wrap items-center justify-center text-3xl md:text-5xl gap-2 ${solved ? 'opacity-50' : ''}`}>
+              {lhsParts.map((part, i) => (
+                <span key={i} className={part.isOp ? 'text-primary' : part.isVar ? 'font-mono italic' : ''}>
+                  {part.text}
+                </span>
+              ))}
+              <span className="text-outline-variant mx-4">=</span>
+              <span>{equation.rhsStr}</span>
             </div>
-          </section>
-        </div>
-
-        {/* Ghost Preview — always takes up space (visibility toggled via opacity) */}
-        <section
-          className="w-full max-w-3xl mb-2 flex-shrink-0 flex flex-col items-center transition-opacity duration-300"
-          style={{ opacity: hasPreview ? 1 : 0, pointerEvents: hasPreview ? 'auto' : 'none' }}
-        >
-          <div
-            className="border-2 border-dashed border-primary/20 p-4 rounded-[2rem] w-full flex flex-col items-center"
-            style={{ backdropFilter: 'blur(16px)', background: 'rgba(21,38,63,0.4)' }}
-          >
-            <div className="flex flex-wrap items-center justify-center gap-2 md:gap-4 mb-3">
-              <div className="flex items-center text-xl md:text-3xl font-headline font-medium text-on-surface/50 line-through decoration-primary-container/40">
-                {lhsParts.map((p, i) => <span key={i}>{p.text}</span>)}
-              </div>
-              <div className="flex items-center text-2xl md:text-4xl font-headline font-bold text-primary animate-pulse">
-                <span className="mx-2 text-primary-fixed">{operationLabel.charAt(0)}</span>
-                <span>{operationLabel.slice(1).trim()}</span>
-              </div>
-              <div className="text-xl text-outline-variant mx-2">=</div>
-              <div className="flex items-center text-xl md:text-3xl font-headline font-medium text-on-surface/50 line-through decoration-primary-container/40">
-                {equation.rhsStr}
-              </div>
-              <div className="flex items-center text-2xl md:text-4xl font-headline font-bold text-primary animate-pulse">
-                <span className="mx-2 text-primary-fixed">{operationLabel.charAt(0)}</span>
-                <span>{operationLabel.slice(1).trim()}</span>
-              </div>
-            </div>
-            <div className="flex gap-4 w-full max-w-xs">
-              <button
-                onClick={() => { setInput(''); setSelectedOp(null) }}
-                className="flex-1 py-2 px-4 rounded-xl bg-error-container text-on-error-container font-headline font-bold flex items-center justify-center gap-2 active:scale-95 transition-all text-sm"
-              >
-                <span className="material-symbols-outlined text-base">close</span>
-                CLEAR
-              </button>
+            <div className="mt-3 text-on-surface-variant font-medium tracking-widest uppercase text-xs">
+              {solved ? 'Well done!' : 'Current Equilibrium'}
             </div>
           </div>
         </section>
       </main>
+
+      {/* Ghost Preview — outside main so overflow-hidden never clips it */}
+      <section
+        className="flex-shrink-0 w-full px-4 pb-2 transition-opacity duration-300"
+        style={{ opacity: hasPreview ? 1 : 0, pointerEvents: hasPreview ? 'auto' : 'none' }}
+      >
+        <div
+          className="border-2 border-dashed border-primary/20 p-4 rounded-[2rem] w-full max-w-3xl mx-auto flex flex-col items-center"
+          style={{ backdropFilter: 'blur(16px)', background: 'rgba(21,38,63,0.4)' }}
+        >
+          <div className="flex flex-wrap items-center justify-center gap-2 md:gap-4 mb-3">
+            <div className="flex items-center text-xl md:text-3xl font-headline font-medium text-on-surface/50 line-through decoration-primary-container/40">
+              {lhsParts.map((p, i) => <span key={i}>{p.text}</span>)}
+            </div>
+            <div className="flex items-center text-2xl md:text-4xl font-headline font-bold text-primary animate-pulse">
+              <span className="mx-2 text-primary-fixed">{operationLabel.charAt(0)}</span>
+              <span>{operationLabel.slice(1).trim()}</span>
+            </div>
+            <div className="text-xl text-outline-variant mx-2">=</div>
+            <div className="flex items-center text-xl md:text-3xl font-headline font-medium text-on-surface/50 line-through decoration-primary-container/40">
+              {equation.rhsStr}
+            </div>
+            <div className="flex items-center text-2xl md:text-4xl font-headline font-bold text-primary animate-pulse">
+              <span className="mx-2 text-primary-fixed">{operationLabel.charAt(0)}</span>
+              <span>{operationLabel.slice(1).trim()}</span>
+            </div>
+          </div>
+          <div className="flex gap-4 w-full max-w-xs">
+            <button
+              onClick={() => { setInput(''); setSelectedOp(null) }}
+              className="flex-1 py-2 px-4 rounded-xl bg-error-container text-on-error-container font-headline font-bold flex items-center justify-center gap-2 active:scale-95 transition-all text-sm"
+            >
+              <span className="material-symbols-outlined text-base">close</span>
+              CLEAR
+            </button>
+          </div>
+        </div>
+      </section>
 
       {/* Keypad — in-flow at the bottom, takes its natural height */}
       <div className="flex-shrink-0 bg-slate-900/95 backdrop-blur-2xl rounded-t-[2.5rem] px-4 pt-4 pb-6 shadow-[0_-20px_50px_rgba(0,0,0,0.4)]">
