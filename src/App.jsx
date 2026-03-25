@@ -21,6 +21,7 @@ export default function App() {
   const [equation, setEquation] = useState(() => pickEquation(LEVELS[getSavedLevelIndex()]))
   const [history, setHistory] = useState([]) // stack of previous equations
   const [solved, setSolved] = useState(false)
+  const [attempts, setAttempts] = useState(0)
 
   function handleLevelChange(newIndex) {
     setLevelIndex(newIndex)
@@ -35,6 +36,7 @@ export default function App() {
       lhsStr: operationResult.newLhsSimplified,
       rhsStr: operationResult.newRhsSimplified,
     }
+    setAttempts(n => n + 1)
     setHistory(prev => [...prev, equation])
     setEquation(next)
     if (isSolved(`${next.lhsStr} = ${next.rhsStr}`)) {
@@ -68,6 +70,7 @@ export default function App() {
       levelCount={LEVELS.length}
       levelLabel={LEVELS[levelIndex].label}
       onLevelChange={handleLevelChange}
+      attempts={attempts}
     />
   )
 }

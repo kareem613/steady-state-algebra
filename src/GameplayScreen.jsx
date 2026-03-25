@@ -22,7 +22,7 @@ const KEY_TO_OP = {
  * Lets the user type an operation to apply to both sides of the equation.
  * On submit, shows a preview via the Ghost Preview state.
  */
-export default function GameplayScreen({ equation, onApply, onUndo, canUndo, solved, onNextPuzzle, levelIndex, levelCount, levelLabel, onLevelChange }) {
+export default function GameplayScreen({ equation, onApply, onUndo, canUndo, solved, onNextPuzzle, levelIndex, levelCount, levelLabel, onLevelChange, attempts = 0 }) {
   const [input, setInput] = useState('')
   const [selectedOp, setSelectedOp] = useState(null)
 
@@ -66,6 +66,11 @@ export default function GameplayScreen({ equation, onApply, onUndo, canUndo, sol
           <h1 className="text-lg font-bold text-sky-400 tracking-widest uppercase font-headline tracking-tight">
             STEADY STATE
           </h1>
+          {attempts > 0 && (
+            <span className="text-xs font-headline font-semibold text-on-surface-variant tracking-widest uppercase tabular-nums">
+              {attempts} {attempts === 1 ? 'attempt' : 'attempts'}
+            </span>
+          )}
         </div>
       </header>
 
