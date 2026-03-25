@@ -124,15 +124,7 @@ export default function GameplayScreen({ equation, onApply, onUndo, canUndo, sol
               <span>{operationLabel.slice(1).trim()}</span>
             </div>
           </div>
-          <div className="flex gap-4 w-full max-w-xs">
-            <button
-              onClick={() => { setInput(''); setSelectedOp(null) }}
-              className="flex-1 py-2 px-4 rounded-xl bg-error-container text-on-error-container font-headline font-bold flex items-center justify-center gap-2 active:scale-95 transition-all text-sm"
-            >
-              <span className="material-symbols-outlined text-base">close</span>
-              CLEAR
-            </button>
-          </div>
+
         </div>
       </section>
 
