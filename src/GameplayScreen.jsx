@@ -84,11 +84,11 @@ export default function GameplayScreen({ equation, onApply, onUndo, canUndo, mov
 
         {/* Equation Display */}
         <section className="w-full max-w-2xl text-center z-10">
-          <div className={`p-5 md:p-10 rounded-2xl relative transition-colors ${solved ? 'bg-secondary/10' : 'bg-surface-container-low'}`}>
+          <div className="p-5 md:p-10 rounded-2xl relative transition-colors bg-surface-container-low">
             {solved && (
-              <div className="text-secondary font-headline font-bold text-3xl mb-2">✓ Solved!</div>
+              <div className="text-on-background font-headline font-bold text-3xl mb-2">✓ Solved!</div>
             )}
-            <div className={`font-headline font-bold tracking-tighter text-on-background flex flex-wrap items-center justify-center text-3xl md:text-5xl gap-2 ${solved ? 'opacity-50' : ''}`}>
+            <div className="font-headline font-bold tracking-tighter text-on-background flex flex-wrap items-center justify-center text-3xl md:text-5xl gap-2">
               {lhsParts.map((part, i) => (
                 <span key={i} className={part.isOp ? 'text-primary' : part.isVar ? 'font-mono italic' : ''}>
                   {part.text}
@@ -98,7 +98,7 @@ export default function GameplayScreen({ equation, onApply, onUndo, canUndo, mov
               <span>{displayRhs}</span>
             </div>
             {solved ? (
-              <div className="mt-3 text-on-surface-variant font-medium tracking-widest uppercase text-xs">
+              <div className="mt-3 text-secondary font-medium tracking-widest uppercase text-xs">
                 Solved in {moves} {moves === 1 ? 'move' : 'moves'}!
               </div>
             ) : moves > 0 && (
