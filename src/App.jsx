@@ -65,6 +65,7 @@ export default function App() {
       onApply={handleApply}
       onUndo={handleUndo}
       canUndo={history.length > 0}
+      moves={history.length}
       solved={solved}
       onNextPuzzle={handleNextPuzzle}
       levelIndex={levelIndex}

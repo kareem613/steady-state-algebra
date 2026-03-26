@@ -22,7 +22,7 @@ const KEY_TO_OP = {
  * Lets the user type an operation to apply to both sides of the equation.
  * On submit, shows a preview via the Ghost Preview state.
  */
-export default function GameplayScreen({ equation, onApply, onUndo, canUndo, solved, onNextPuzzle, levelIndex, levelCount, levelLabel, onLevelChange, attempts = 0 }) {
+export default function GameplayScreen({ equation, onApply, onUndo, canUndo, moves = 0, solved, onNextPuzzle, levelIndex, levelCount, levelLabel, onLevelChange, attempts = 0 }) {
   const [input, setInput] = useState('')
   const [selectedOp, setSelectedOp] = useState(null)
 
@@ -97,9 +97,13 @@ export default function GameplayScreen({ equation, onApply, onUndo, canUndo, sol
               <span className="text-outline-variant mx-4">=</span>
               <span>{displayRhs}</span>
             </div>
-            {solved && (
+            {solved ? (
               <div className="mt-3 text-on-surface-variant font-medium tracking-widest uppercase text-xs">
-                Well done!
+                Solved in {moves} {moves === 1 ? 'move' : 'moves'}!
+              </div>
+            ) : moves > 0 && (
+              <div className="mt-3 text-on-surface-variant font-medium tracking-widest uppercase text-xs tabular-nums">
+                {moves} {moves === 1 ? 'move' : 'moves'}
               </div>
             )}
           </div>
